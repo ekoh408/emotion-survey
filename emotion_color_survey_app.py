@@ -54,9 +54,9 @@ color_hex = {
 }
 
 # 드래그용 텍스트 리스트
-items = list(color_hex.keys())
+items = [f"{color} 색상" for color in color_hex]
 sorted_items = sort_items(items, direction="vertical")
-sorted_colors = sorted_items
+sorted_colors = [item.replace(" 색상", "") for item in sorted_items]
 color_rank = {color: idx + 1 for idx, color in enumerate(sorted_colors)}
 
 # 시각적 보조 표시
