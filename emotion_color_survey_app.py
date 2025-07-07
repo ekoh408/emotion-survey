@@ -54,10 +54,7 @@ color_hex = {
 }
 
 # 드래그용 아이템 리스트
-items = [
-    f'<div style="display:flex;align-items:center;"><div style="width:25px;height:25px;background-color:{hex};border:1px solid #000;margin-right:10px;"></div>{color}</div>'
-    for color, hex in color_hex.items()
-]
+items = [f"{color} ({hex})" for color, hex in color_hex.items()]
 
 # 실제 순서 정렬
 sorted_items = sort_items(items, direction="vertical")
