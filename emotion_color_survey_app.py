@@ -9,7 +9,7 @@ st.title("🎨 정서 경험 유형 및 색채 감정 설문")
 
 # 사용자 정보 입력
 name = st.text_input("이름을 입력하세요")
-age = st.number_input("나이를 입력하세요", min_value=10, max_value=19)
+age = st.number_input("학년을 입력하세요", min_value=1, max_value=3)
 
 st.header("1. 정서 경험 유형 분류")
 
