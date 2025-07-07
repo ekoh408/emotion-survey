@@ -42,9 +42,9 @@ emotion_code = clarity_sign + intensity_sign
 emotion_type = type_map[emotion_code]
 st.success(f"👉 당신의 정서 경험 유형은 **{emotion_type}**입니다.")
 
-# 색상 순위 입력 (드래그 앤 드롭)
+# 색상 순위 입력 (텍스트 기반 드래그 + 별도 시각화)
 st.header("2. 색채 감정 순위 평가")
-st.markdown("가장 긍정적인 색부터 순서대로 드래그하세요.")
+st.markdown("아래 색상들을 **가장 긍정적인 색부터 차례대로 드래그하세요.**")
 
 color_hex = {
     "빨강": "#FF0000", "주황": "#FFA500", "노랑": "#FFFF00",
@@ -53,17 +53,21 @@ color_hex = {
     "하양": "#FFFFFF", "회색": "#808080", "검정": "#000000"
 }
 
-# 드래그용 아이템 리스트
-items = [f"{color} ({hex})" for color, hex in color_hex.items()]
-
-# 실제 순서 정렬
+# 드래그용 텍스트 리스트
+items = [f"{color} ({color_hex[color]})" for color in color_hex]
 sorted_items = sort_items(items, direction="vertical")
-sorted_colors = [item.split('>')[-1].split('<')[0] for item in sorted_items]
+sorted_colors = [item.split()[0] for item in sorted_items]
 color_rank = {color: idx + 1 for idx, color in enumerate(sorted_colors)}
 
-# 순위 보여주기
-for i, color in enumerate(sorted_colors, 1):
-    st.markdown(f"{i}위: **{color}**")
+# 시각적 보조 표시
+st.markdown("### 선택한 순서:")
+for color in sorted_colors:
+    st.markdown(
+        f"<div style='display:flex;align-items:center;margin-bottom:4px;'>"
+        f"<div style='width:25px;height:25px;background-color:{color_hex[color]};border:1px solid #000;margin-right:10px;'></div>"
+        f"<b>{color}</b></div>",
+        unsafe_allow_html=True
+    )
 
 # 배쓰밤 관련
 st.header("3. 배쓰밤 관련 질문")
