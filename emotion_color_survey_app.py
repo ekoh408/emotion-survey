@@ -2,29 +2,33 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-import io
 
 st.set_page_config(page_title="정서 색채 설문", layout="centered")
 st.title("🎨 정서 경험 유형 및 색채 감정 설문")
 
 # 사용자 정보 입력
 name = st.text_input("이름을 입력하세요")
-age = st.number_input("나이를 입력하세요", min_value=10, max_value=19)
+age = st.number_input("학년을 입력하세요", min_value=1, max_value=3)
 
 st.header("1. 정서 경험 유형 분류")
 
+# 점수 표시용 라벨
+labels = ["1 - 매우 아니다", "2 - 약간 아니다", "3 - 보통이다", "4 - 약간 그렇다", "5 - 매우 그렇다"]
+
 # 정서 인식 명확성 (3문항)
-clarity_q1 = st.slider("나는 평소 내가 느끼는 감정에 관심을 기울이는 편이다.", 1, 5)
-clarity_q2 = st.slider("나는 지금 내가 어떤 감정을 느끼는지 스스로 명확히 말할 수 있다.", 1, 5)
-clarity_q3 = st.slider("나는 언제든지 내 감정을 조절할 수 있다고 믿는다.", 1, 5)
+clarity_q1 = st.radio("나는 평소 내가 느끼는 감정에 관심을 기울이는 편이다.", list(range(1, 6)), format_func=lambda x: labels[x-1])
+clarity_q2 = st.radio("나는 지금 내가 어떤 감정을 느끼는지 스스로 명확히 말할 수 있다.", list(range(1, 6)), format_func=lambda x: labels[x-1])
+clarity_q3 = st.radio("나는 언제든지 내 감정을 조절할 수 있다고 믿는다.", list(range(1, 6)), format_func=lambda x: labels[x-1])
 
 # 정서 강도 (1문항)
-intensity_q = st.slider("특정 감정을 느끼면 쉽게 잊지 못하고 오래 지속된다.", 1, 5)
+intensity_q1 = st.radio("특정 감정을 느끼면 쉽게 잊지 못하고 오래 지속된다.", list(range(1, 6)), format_func=lambda x: labels[x-1])
 
 # 정서 경험 유형 계산
 clarity_avg = (clarity_q1 + clarity_q2 + clarity_q3) / 3
+intensity_avg = intensity_q1
+
 clarity_sign = "+" if clarity_avg >= 3 else "-"
-intensity_sign = "+" if intensity_q >= 3 else "-"
+intensity_sign = "+" if intensity_avg >= 3 else "-"
 
 type_map = {
     "++": "격렬형",
@@ -80,14 +84,13 @@ if st.button("📥 설문 결과 제출"):
         "나이": age,
         "정서유형": emotion_type,
         "명확성 평균": round(clarity_avg, 2),
-        "정서 강도": intensity_q,
+        "정서 강도": intensity_avg,
         "배쓰밤 사용 의향": use_bathbomb,
         "배쓰밤 색 고려 여부": color_consider,
         "2차 참여": agree_followup,
         "전화번호": phone
     }
 
-    # 색상 순위 추가
     for color in color_hex:
         result[f"{color} 순위"] = color_rank[color]
 
