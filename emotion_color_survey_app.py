@@ -14,12 +14,12 @@ age = st.number_input("나이를 입력하세요", min_value=10, max_value=19)
 st.header("1. 정서 경험 유형 분류")
 
 # 정서 인식 명확성 (3문항)
-clarity_q1 = st.slider("나는 내 감정을 잘 인식할 수 있다.", 1, 5)
-clarity_q2 = st.slider("감정의 종류를 명확히 구별할 수 있다.", 1, 5)
-clarity_q3 = st.slider("감정의 원인을 쉽게 파악할 수 있다.", 1, 5)
+clarity_q1 = st.slider("나는 평소 내가 느끼는 감정에 관심을 기울이는 편이다.", 1, 5)
+clarity_q2 = st.slider("나는 지금 내가 어떤 감정을 느끼는지 스스로 명확히 말할 수 있다.", 1, 5)
+clarity_q3 = st.slider("나는 언제든지 내 감정을 조절할 수 있다고 믿는다.", 1, 5)
 
 # 정서 강도 (1문항)
-intensity_q = st.slider("감정을 느낄 때 강하게 느끼는 편이다.", 1, 5)
+intensity_q = st.slider("특정 감정을 느끼면 쉽게 잊지 못하고 오래 지속된다.", 1, 5)
 
 # 정서 경험 유형 계산
 clarity_avg = (clarity_q1 + clarity_q2 + clarity_q3) / 3
