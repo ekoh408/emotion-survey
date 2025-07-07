@@ -2,13 +2,14 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from streamlit_sortables import sort_items
 
 st.set_page_config(page_title="정서 색채 설문", layout="centered")
 st.title("🎨 정서 경험 유형 및 색채 감정 설문")
 
 # 사용자 정보 입력
 name = st.text_input("이름을 입력하세요")
-age = st.number_input("학년을 입력하세요", min_value=1, max_value=3)
+age = st.number_input("나이를 입력하세요", min_value=10, max_value=19)
 
 st.header("1. 정서 경험 유형 분류")
 
@@ -41,9 +42,9 @@ emotion_code = clarity_sign + intensity_sign
 emotion_type = type_map[emotion_code]
 st.success(f"👉 당신의 정서 경험 유형은 **{emotion_type}**입니다.")
 
-# 색상 순위 입력
+# 색상 순위 입력 (드래그 앤 드롭)
 st.header("2. 색채 감정 순위 평가")
-st.markdown("다음 12색을 1 (가장 긍정적) ~ 12 (가장 부정적) 순서로 평가해 주세요.")
+st.markdown("가장 긍정적인 색부터 순서대로 드래그하세요.")
 
 color_hex = {
     "빨강": "#FF0000", "주황": "#FFA500", "노랑": "#FFFF00",
@@ -52,19 +53,20 @@ color_hex = {
     "하양": "#FFFFFF", "회색": "#808080", "검정": "#000000"
 }
 
-color_rank = {}
-for color, hex_code in color_hex.items():
-    st.markdown(
-        f"""
-        <div style="display:flex;align-items:center;">
-            <div style="width:30px;height:30px;background-color:{hex_code};border:1px solid #000;margin-right:10px;"></div>
-            <b>{color}</b>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    rank = st.number_input(f"{color}의 순위", 1, 12, key=color)
-    color_rank[color] = rank
+# 드래그용 아이템 리스트
+items = [
+    f'<div style="display:flex;align-items:center;"><div style="width:25px;height:25px;background-color:{hex};border:1px solid #000;margin-right:10px;"></div>{color}</div>'
+    for color, hex in color_hex.items()
+]
+
+# 실제 순서 정렬
+sorted_items = sort_items(items, direction="vertical")
+sorted_colors = [item.split('>')[-1].split('<')[0] for item in sorted_items]
+color_rank = {color: idx + 1 for idx, color in enumerate(sorted_colors)}
+
+# 순위 보여주기
+for i, color in enumerate(sorted_colors, 1):
+    st.markdown(f"{i}위: **{color}**")
 
 # 배쓰밤 관련
 st.header("3. 배쓰밤 관련 질문")
@@ -92,7 +94,7 @@ if st.button("📥 설문 결과 제출"):
     }
 
     for color in color_hex:
-        result[f"{color} 순위"] = color_rank[color]
+        result[f"{color} 순위"] = color_rank.get(color, "")
 
     df = pd.DataFrame([result])
     csv = df.to_csv(index=False).encode("utf-8-sig")
